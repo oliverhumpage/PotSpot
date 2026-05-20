@@ -1,0 +1,33 @@
+/* BBC iPlayer — layout overrides injected by PotSpot on activation, removed on close. */
+
+#orbit-header,
+#orb-footer 
+{
+	display:none;
+}
+#main > * {display:none;}
+#main > .hero-player,
+#main > .hero-meta.gel-wrap
+{
+	display:block;
+}
+
+#main .player {
+	padding-bottom:0;
+	height:100vh;
+}
+#main .hero-player__player {
+	padding-bottom:100vh;
+	width:calc(100vw - 190px); /* 190 is half the sidebar width of 380px */
+	margin-left:-95px;
+}
+#main .hero-player__theatre > .gel-wrap {
+	width:100vw;
+	height:100vh;
+	padding-left:0;
+	margin-left:0;
+}
+#main .hero-player__theatre {
+	max-width:100%;
+}
+

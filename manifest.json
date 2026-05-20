@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "PotSpot",
+  "version": "1.5.20.0",
+  "description": "Renders an interactive birds-eye plan view of the snooker table and balls when watching snooker games.",
+  "permissions": ["activeTab", "scripting", "contextMenus", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Spot the Pots",
+    "default_icon": {
+      "16":  "iconsface/icon16.png",
+      "48":  "iconsface/icon48.png",
+      "128": "iconsface/icon128.png",
+      "256": "iconsface/icon256.png",
+      "512": "iconsface/icon512.png"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

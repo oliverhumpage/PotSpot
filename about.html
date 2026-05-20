@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About PotSpot</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #0a160a;
+      color: #c0d8c0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 48px 24px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ── Header ── */
+    .header { border-bottom: 1px solid #1d4a1d; padding-bottom: 24px; }
+    .logo { font-size: 2rem; font-weight: 800; color: #5cb85c;
+            letter-spacing: 2px; text-transform: uppercase; }
+    .tagline { font-size: 0.85rem; color: #3a6a3a; margin-top: 6px; }
+    .version { display: inline-block; margin-top: 10px; font-size: 0.72rem;
+               color: #4a7a4a; background: #0f2a0f; border: 1px solid #1d4a1d;
+               border-radius: 4px; padding: 2px 8px; letter-spacing: 0.5px; }
+
+    /* ── Sections ── */
+    section { display: flex; flex-direction: column; gap: 10px; }
+
+    h2 { font-size: 0.7rem; font-weight: 700; color: #3a6a3a;
+         text-transform: uppercase; letter-spacing: 1.5px;
+         border-bottom: 1px solid #142a14; padding-bottom: 8px; }
+
+    p, li { font-size: 0.88rem; color: #8ab08a; line-height: 1.6; }
+    ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+    .credit { display: flex; flex-direction: column; gap: 2px; }
+    .credit-title { color: #a0c0a0; font-size: 0.85rem; }
+    .credit-detail { font-size: 0.78rem; color: #5a8a5a; }
+    .credit-detail a { color: #4a9a4a; text-decoration: none; }
+    .credit-detail a:hover { text-decoration: underline; }
+
+    /* ── Links ── */
+    .link-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .link-btn {
+      display: inline-block; padding: 8px 16px;
+      background: #0f2a0f; border: 1px solid #1d4a1d; border-radius: 6px;
+      color: #5cb85c; font-size: 0.82rem; font-weight: 600; text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .link-btn:hover { background: #162e16; border-color: #2a6a2a; }
+
+    /* ── Footer ── */
+    footer { font-size: 0.72rem; color: #2a4a2a; padding-top: 16px;
+             border-top: 1px solid #142a14; }
+  </style>
+</head>
+<body>
+  <main>
+
+    <div class="header">
+      <div class="logo">PotSpot</div>
+      <div class="tagline">Snooker ball detector for BBC iPlayer</div>
+      <div class="version">Version 1.1</div>
+    </div>
+
+    <section>
+      <h2>About</h2>
+      <p>
+        PotSpot detects snooker balls in BBC iPlayer livestreams and renders
+        an interactive top-down plan view of the table. Click any ball to
+        see aim lines and object-ball deflections.
+      </p>
+      <p>
+        Detection runs entirely in the browser — no data
+        leaves your device apart from completely anonymous usage stats (basically, how many times Detect gets clicked).
+      </p>
+    </section>
+
+    <section>
+      <h2>Credits</h2>
+      <ul>
+        <li class="credit">
+          <span class="credit-title">Author</span>
+          <span class="credit-detail">
+            Oliver Humpage, of <a href="https://entuplet.co.uk/">Entuplet IT Consultancy</a>.<br /><br />
+            Claude was used, but mostly to turn my pseudo-code into actual code: I have 25+ years of developer experience so I assure you this was built, not vibed.
+          </span>
+        </li>
+        <li class="credit">
+          <span class="credit-title">Naming</span>
+          <span class="credit-detail">
+            Many thanks to Brand Consultant Extraordinaire Jim Moriarty for the name PotSpot, which beat my previous effort of Snook Eyes.
+          </span>
+        </li>
+        <li class="credit">
+          <span class="credit-title">Snooker table diagram</span>
+          <span class="credit-detail">
+            <a href="https://en.wikipedia.org/wiki/File:Snooker_plus_table_drawing.svg"
+               target="_blank" rel="noopener">Snooker table drawing</a>
+            from Wikimedia Commons,
+            licensed <a href="https://creativecommons.org/licenses/by/2.5/deed.en"
+                        target="_blank" rel="noopener">CC Attribution 2.5 Generic</a>.<br />
+                        Alterations: The balls have been removed and where necessary replaced with spots.
+          </span>
+        </li>
+        <li class="credit">
+          <span class="credit-title">OpenCV.js</span>
+          <span class="credit-detail">
+            <a href="https://opencv.org" target="_blank" rel="noopener">opencv.org</a>
+            — Apache Licence 2.0
+          </span>
+        </li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Help &amp; Issues</h2>
+      <p>Found a bug or want to suggest a feature?</p>
+      <div class="link-row">
+        <a class="link-btn" href="https://github.com/oliverhumpage/snookerplot/issues"
+           target="_blank" rel="noopener">Report an issue</a>
+      </div>
+    </section>
+
+    <footer>
+      PotSpot is an independent project and is not affiliated with the BBC or World Snooker.
+    </footer>
+
+  </main>
+</body>
+</html>

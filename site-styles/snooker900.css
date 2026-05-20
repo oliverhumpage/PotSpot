@@ -1,0 +1,29 @@
+.max-w-5xl {
+	max-width:100vw;
+	max-height:100vh;
+	margin-left:-2vw;
+}
+.max-w-5xl iframe {
+	max-height:100vh;
+}
+body > div:first-of-type > div,
+body > div:first-of-type > nav,
+footer
+{
+	display:none!important;
+}
+body > div:first-child #player {
+	display:block;
+}
+
+#player {
+	padding-top:0;
+	padding-bottom:0;
+}
+
+.max-w-5xl > div:first-child {
+	display:none;
+}
+
+#today { display:none; }
+#today ~ div { display:none;}

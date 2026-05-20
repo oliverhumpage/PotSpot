@@ -1,0 +1,26 @@
+/* Channel 5 — layout overrides injected by PotSpot on activation, removed on close. */
+
+section.main-header,
+footer
+{
+	display:none;
+}
+
+#main-content >* {
+	display:none;
+}
+#main-content > .player-view {
+	display:block;
+}
+
+#main-content > .player-view .player-container {
+	margin-left:-120px;
+}
+.videoScreen .c5-player {
+	background-image:none!important;
+}
+
+video {
+	max-height:100vh;
+	max-width:calc(100vh * 16 / 9);
+}
