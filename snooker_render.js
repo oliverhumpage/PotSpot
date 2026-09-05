@@ -101,12 +101,13 @@ style.textContent = `
   #tableCanvas { display: block; cursor: crosshair; }
   #panel.capturing { min-height: 0; background: transparent; filter:grayscale(50%); }
   #panel.tableHidden { min-height: 0; background: transparent; border-bottom: 2px solid #1d5c1d; }
-  #unsanctioned-banner, #blur-banner { background:#1e1800; border-bottom:1px solid #4a3800;
+  #unsanctioned-banner, #blur-banner, #low-angle-banner { background:#1e1800; border-bottom:1px solid #4a3800;
     padding:10px 14px; font-size:0.72rem; color:#c8b060; line-height:1.5; }
   #unsanctioned-banner a { color:#f0c040; }
   #unsanctioned-banner-close { float:right; background:none; border:none;
     color:#c8b060; font-size:14px; cursor:pointer; padding:0 0 0 8px; line-height:1; }
   #blur-banner { display:none; }
+  #low-angle-banner { display:none; }
   #window-banner { display:none; background:#2a0c0c; border-bottom:1px solid #6a1a1a;
     padding:10px 14px; font-size:0.74rem; color:#f0b0b0; line-height:1.5; font-weight:600; }
   #window-banner-dismiss { display:none; margin-top:8px; background:none; border:none;
@@ -198,6 +199,13 @@ const _blurBanner = document.createElement('div');
 _blurBanner.id = 'blur-banner';
 _blurBanner.textContent = '⚠ Low quality video — ball detection will be affected';
 shadow.getElementById('controls').insertAdjacentElement('afterend', _blurBanner);
+
+// ── Low camera angle banner (toggled per-scan by _renderResults) ──────────────
+const _lowAngleBanner = document.createElement('div');
+_lowAngleBanner.id = 'low-angle-banner';
+_lowAngleBanner.textContent = '⚠ Low camera angle: '
+  + 'balls towards the baulk end may not be precisely positioned';
+_blurBanner.insertAdjacentElement('afterend', _lowAngleBanner);
 
 // ── Window-size nudge banner (red; more prominent than the blur banner) ───────
 // Shown at most once per session, only when the detected table is below the
@@ -856,6 +864,8 @@ function _collapseToIdle() {
   _panel.classList.add('compact');
   _blurBanner.style.display = 'none';
   _windowBanner.style.display = 'none';
+  _lowAngleBanner.style.display = 'none';
+  _resizeSidebar();
   shadow.getElementById('table-section').style.display = 'none';
   shadow.getElementById('hide-btn').disabled = true;
   shadow.getElementById('hide-btn').textContent = 'Hide';
@@ -920,6 +930,11 @@ function _renderResults(dataUrl, detections, debugInfo) {
     const nudged = _maybeShowWindowNudge(cc);
     if (!nudged) _windowBanner.style.display = 'none';
     _blurBanner.style.display = (!nudged && cc?.blurry) ? 'block' : 'none';
+    _lowAngleBanner.style.display = cc?.lowAngle ? 'block' : 'none';
+    // Banner visibility just changed the fixed (non-table) height of the
+    // sidebar — resize so the table shrinks to fit rather than being pushed
+    // off the bottom of the window.
+    _resizeSidebar();
     _panel.classList.remove('compact');
     _panel.classList.remove('tableHidden');
     shadowHost.style.height = '100vh';
@@ -1196,13 +1211,24 @@ function _resizeSidebar() {
   const winW = window.innerWidth;
   const winH = window.innerHeight;
 
-  // Measure unzoomed fixed-UI height by temporarily resetting zoom.
   const headerEl   = shadow.getElementById('header');
   const controlsEl = shadow.getElementById('controls');
+  const bannerEls  = ['blur-banner', 'low-angle-banner', 'window-banner', 'unsanctioned-banner']
+    .map(id => shadow.getElementById(id))
+    .filter(Boolean);
+
+  // Measure unzoomed fixed-UI height by temporarily resetting zoom. Any
+  // warning banner currently showing (blur/low-angle/window-size/unsanctioned)
+  // counts toward the fixed height too, so the table shrinks to make room for
+  // it instead of being pushed off the bottom of the window.
   headerEl.style.zoom   = 1;
   controlsEl.style.zoom = 1;
-  const fixedH0 = headerEl.getBoundingClientRect().height
-                + controlsEl.getBoundingClientRect().height;
+  for (const el of bannerEls) el.style.zoom = 1;
+  let fixedH0 = headerEl.getBoundingClientRect().height
+              + controlsEl.getBoundingClientRect().height;
+  for (const el of bannerEls) {
+    if (getComputedStyle(el).display !== 'none') fixedH0 += el.getBoundingClientRect().height;
+  }
 
   // The whole sidebar scales as one unit: fixedH = fixedH0 × zoom, tableH = 2 × width,
   // zoom = width / SIDEBAR_DEFAULT_W.  Total height = width × (fixedH0/380 + 2).
@@ -1216,12 +1242,7 @@ function _resizeSidebar() {
   shadowHost.style.width        = width + 'px';
   headerEl.style.zoom           = zoom;
   controlsEl.style.zoom         = zoom;
-  const blurEl = shadow.getElementById('blur-banner');
-  const warnEl = shadow.getElementById('unsanctioned-banner');
-  const winEl  = shadow.getElementById('window-banner');
-  if (blurEl) blurEl.style.zoom = zoom;
-  if (warnEl) warnEl.style.zoom = zoom;
-  if (winEl)  winEl.style.zoom  = zoom;
+  for (const el of bannerEls) el.style.zoom = zoom;
 }
 
 let _resizePending = false;
@@ -1230,12 +1251,13 @@ window.addEventListener('resize', () => {
   _resizePending = true;
   requestAnimationFrame(() => {
     _resizePending = false;
-    _resizeSidebar();
     // Re-arm the window-size nudge: a resize ends the current episode and hides
     // the banner, so the next qualifying scan can show it again for another 30s.
     // The show-counter is untouched, so this never surfaces the opt-out link mid-session.
     _windowNudgeShownAt = null;
     _windowBanner.style.display = 'none';
+    // Resize after clearing the banner so its now-freed height is reflected.
+    _resizeSidebar();
   });
 });
 _resizeSidebar();

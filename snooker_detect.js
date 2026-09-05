@@ -1739,7 +1739,7 @@ class SnookerDetector {
     const HOUGH_R_HI   = 1.2;  // max accepted radius as fraction of expected r
     const HOUGH_REACH  = 1.3;   // max distance (×r) from expected centre to accepted circle
     const BAIZE_H_TOL  = 5;     // ±degrees from baize H to count a pixel as baize
-    const BAIZE_FRAC   = 0.25;  // reject if >this fraction of disc is baize-hued
+    const BAIZE_FRAC   = 0.35;  // reject if >this fraction of disc is baize-hued
 
     const baizeH = this.baizeHsv ? this.baizeHsv.H : null;
     const circDist = (a, b) => { const d = Math.abs(a - b); return d > 90 ? 180 - d : d; };
@@ -1866,7 +1866,7 @@ class SnookerDetector {
   // Priority 2: a red that is measurably more orange than the other reds.
   _rescueBrown(detections, hsv) {
     const BROWN_HUE_DIST = 5;  // min gap (in OpenCV hue units, 0-179) to trigger red rescue
-    const BROWN_HUE_DIST_MAX = 15;  // max gap (in OpenCV hue units, 0-179) to trigger red rescue, as sometimes we get weirdly high differences
+    const BROWN_HUE_DIST_MAX = 20;  // max gap (in OpenCV hue units, 0-179) to trigger red rescue, as sometimes we get weirdly high differences
 
     const hasName = n => detections.some(d => d.colour.name === n);
     if (hasName('Brown')) return detections;
@@ -2278,6 +2278,22 @@ class SnookerDetector {
     }
 
     const playWidthCss = (br.x - bl.x) / pixelDensity;
+
+    // ── Camera angle (low-elevation shots foreshorten the baulk end) ──────────
+    // A low camera elevation compresses the far (top-of-image, baulk) end of the
+    // playing area much more than a normal broadcast angle, which makes ball
+    // positions there less reliable. Ratio of playing-area height to the width
+    // of its top (far) edge — below LOW_ANGLE_RATIO the shot is flagged as a
+    // soft warning (detection still runs).
+    const LOW_ANGLE_RATIO = 0.8;
+    let lowAngle = false;
+    const pac = td.playAreaCorners;
+    if (pac) {
+      const topWidthPx = Math.hypot(pac.tr.x - pac.tl.x, pac.tr.y - pac.tl.y);
+      const heightPx   = ((pac.bl.y + pac.br.y) / 2) - ((pac.tl.y + pac.tr.y) / 2);
+      if (topWidthPx > 0) lowAngle = (heightPx / topWidthPx) < LOW_ANGLE_RATIO;
+    }
+
     return {
       suitable:        !obstructionFound,
       hasObstruction:  obstructionFound,
@@ -2287,6 +2303,7 @@ class SnookerDetector {
       blurry,
       tableSmall:      playWidthCss < RECOMMENDEDWIDTH,
       playWidthCss:    Math.round(playWidthCss),
+      lowAngle,
     };
   }
 

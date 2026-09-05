@@ -24,3 +24,19 @@ video {
 	max-height:100vh;
 	max-width:calc(100vh * 16 / 9);
 }
+
+/* Live view */
+#main-content > div:has(> div.live-channels-view > section.live-section) {
+  display: revert;
+}
+div.live-channels-view > section {
+	display:none;
+}
+div.live-channels-view > section.live-section {
+	display:revert;
+}
+section.live-section div.c5-player {
+	margin-left:-120px!important;
+	height:100vh;
+	width:100vw;
+}

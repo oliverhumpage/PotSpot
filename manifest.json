@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PotSpot",
-  "version": "1.6.11.0",
+  "version": "1.7.1.0",
   "description": "Renders an interactive birds-eye plan view of the snooker table and balls when watching snooker games.",
   "permissions": ["activeTab", "scripting", "contextMenus", "storage"],
   "background": {
